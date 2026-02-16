@@ -20,4 +20,6 @@ export class CreateBookingDto {
     @IsString()
     @IsNotEmpty()
     customerPhone: string;
+
+    userId?: string;
 }

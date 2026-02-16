@@ -8,3 +8,7 @@ export { default as Login } from './Login';
 export { default as Register } from './Register';
 export { default as Profile } from './Profile';
 export { default as AddService } from './AddService';
+export { default as ServicesManager } from './ServicesManager';
+export { default as CategoriesManager } from './CategoriesManager';
+export { default as EditService } from './EditService';
+export { default as SettingsManager } from './SettingsManager';
