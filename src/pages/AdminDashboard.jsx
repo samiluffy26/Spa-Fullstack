@@ -173,11 +173,14 @@ const AdminDashboard = () => {
                                 </div>
                                 <span className="text-sm font-bold text-gray-700">Añadir Nuevo Servicio</span>
                             </button>
-                            <button className="w-full text-left p-4 rounded-xl border border-gray-100 hover:bg-gray-50 transition-colors flex items-center gap-3">
+                            <button
+                                onClick={() => navigate('/admin/services')}
+                                className="w-full text-left p-4 rounded-xl border border-gray-100 hover:bg-gray-50 transition-colors flex items-center gap-3"
+                            >
                                 <div className="p-2 bg-sage-50 text-sage-600 rounded-lg">
                                     <Calendar className="w-5 h-5" />
                                 </div>
-                                <span className="text-sm font-bold text-gray-700">Gestionar Agenda</span>
+                                <span className="text-sm font-bold text-gray-700">Gestionar Servicios</span>
                             </button>
                             <button
                                 onClick={() => navigate('/admin/categories')}

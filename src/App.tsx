@@ -14,6 +14,8 @@ import {
 import AdminDashboard from './pages/AdminDashboard';
 import AddService from './pages/AddService';
 import CategoriesManager from './pages/CategoriesManager';
+import ServicesManager from './pages/ServicesManager';
+import EditService from './pages/EditService';
 import AdminRoute from './components/auth/AdminRoute';
 
 /**
@@ -54,6 +56,8 @@ function App() {
         <Route path="admin" element={<AdminRoute />}>
           <Route index element={<AdminDashboard />} />
           <Route path="services/new" element={<AddService />} />
+          <Route path="services/edit/:id" element={<EditService />} />
+          <Route path="services" element={<ServicesManager />} />
           <Route path="categories" element={<CategoriesManager />} />
         </Route>
 
