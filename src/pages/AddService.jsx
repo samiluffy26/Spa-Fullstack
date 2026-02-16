@@ -33,14 +33,23 @@ const AddService = () => {
         imageUrl: '' // String URL
     });
 
-    const categories = [
-        'Masajes',
-        'Faciales',
-        'Corporales',
-        'Relax',
-        'Parejas',
-        'Especiales'
-    ];
+    const [categories, setCategories] = useState([]);
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const response = await api.get('/categories');
+                // Assuming response.data is an array of objects { _id, name }
+                // We map to just names for the select, or we can use the object if we want the ID.
+                // The current backend service schema stores 'category' as a string name.
+                // So we will just use the name from the category object.
+                setCategories(response.data.map(cat => cat.name));
+            } catch (err) {
+                console.error('Error fetching categories:', err);
+            }
+        };
+        fetchCategories();
+    }, []);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -260,8 +269,8 @@ const AddService = () => {
                                         type="button"
                                         onClick={() => setImageMode('upload')}
                                         className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-colors ${imageMode === 'upload'
-                                                ? 'bg-primary-50 text-primary-700 ring-1 ring-primary-500'
-                                                : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
+                                            ? 'bg-primary-50 text-primary-700 ring-1 ring-primary-500'
+                                            : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
                                             }`}
                                     >
                                         Subir Archivo
@@ -270,8 +279,8 @@ const AddService = () => {
                                         type="button"
                                         onClick={() => setImageMode('url')}
                                         className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-colors ${imageMode === 'url'
-                                                ? 'bg-primary-50 text-primary-700 ring-1 ring-primary-500'
-                                                : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
+                                            ? 'bg-primary-50 text-primary-700 ring-1 ring-primary-500'
+                                            : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
                                             }`}
                                     >
                                         Usar URL

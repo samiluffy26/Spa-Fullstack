@@ -12,7 +12,8 @@ import {
     RefreshCw,
     Plus,
     X,
-    AlertTriangle
+    AlertTriangle,
+    Tag
 } from 'lucide-react';
 import api from '../utils/api';
 import Card from '../components/ui/Card';
@@ -177,6 +178,15 @@ const AdminDashboard = () => {
                                     <Calendar className="w-5 h-5" />
                                 </div>
                                 <span className="text-sm font-bold text-gray-700">Gestionar Agenda</span>
+                            </button>
+                            <button
+                                onClick={() => navigate('/admin/categories')}
+                                className="w-full text-left p-4 rounded-xl border border-gray-100 hover:bg-gray-50 transition-colors flex items-center gap-3"
+                            >
+                                <div className="p-2 bg-purple-50 text-purple-600 rounded-lg">
+                                    <Tag className="w-5 h-5" />
+                                </div>
+                                <span className="text-sm font-bold text-gray-700">Gestionar Categorías</span>
                             </button>
                             <button className="w-full text-left p-4 rounded-xl border border-gray-100 hover:bg-gray-50 transition-colors flex items-center gap-3">
                                 <div className="p-2 bg-red-50 text-red-600 rounded-lg">
