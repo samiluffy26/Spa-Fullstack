@@ -9,13 +9,14 @@ import {
   Contact,
   Login,
   Register,
-  Profile
+  Profile,
+  AddService,
+  ServicesManager,
+  CategoriesManager,
+  EditService,
+  SettingsManager
 } from './pages';
 import AdminDashboard from './pages/AdminDashboard';
-import AddService from './pages/AddService';
-import CategoriesManager from './pages/CategoriesManager';
-import ServicesManager from './pages/ServicesManager';
-import EditService from './pages/EditService';
 import AdminRoute from './components/auth/AdminRoute';
 
 /**

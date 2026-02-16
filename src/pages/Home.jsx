@@ -17,17 +17,17 @@ import { useServices } from '../hooks';
  * - CTA final
  */
 const Home = () => {
-  const { getPopularServices } = useServices();
+  const { getPopularServices, isLoading, error } = useServices();
   const popularServices = getPopularServices(3);
 
   return (
     <div className="min-h-screen">
-      
+
       {/* HERO SECTION */}
       <section className="relative bg-gradient-to-br from-sage-50 via-primary-50 to-white py-20 overflow-hidden">
         <div className="container-custom">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            
+
             {/* Texto */}
             <div className="space-y-8 animate-fadeIn">
               <div className="inline-block">
@@ -35,14 +35,14 @@ const Home = () => {
                   ✨ Tu oasis de tranquilidad
                 </span>
               </div>
-              
+
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-serif font-bold text-gray-900 leading-tight">
                 Renueva tu
                 <span className="block text-primary-600">cuerpo y mente</span>
               </h1>
-              
+
               <p className="text-xl text-gray-600 leading-relaxed max-w-xl">
-                Experimenta la perfecta armonía entre bienestar y relajación. 
+                Experimenta la perfecta armonía entre bienestar y relajación.
                 Tratamientos personalizados con productos naturales de primera calidad.
               </p>
 
@@ -86,7 +86,7 @@ const Home = () => {
                     <Sparkles className="w-32 h-32 text-white/50" />
                   </div>
                 </div>
-                
+
                 {/* Floating card */}
                 <div className="absolute bottom-8 left-8 right-8 bg-white/95 backdrop-blur-md rounded-2xl p-6 shadow-xl">
                   <div className="flex items-center gap-4">
@@ -121,9 +121,23 @@ const Home = () => {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-            {popularServices.map((service) => (
-              <ServiceCard key={service.id} service={service} />
-            ))}
+            {isLoading ? (
+              <div className="col-span-full text-center py-12">
+                <p className="text-gray-500">Cargando servicios destacados...</p>
+              </div>
+            ) : error ? (
+              <div className="col-span-full text-center py-12 text-red-500">
+                <p>Error al cargar servicios: {error}</p>
+              </div>
+            ) : popularServices.length > 0 ? (
+              popularServices.map((service) => (
+                <ServiceCard key={service.id} service={service} />
+              ))
+            ) : (
+              <div className="col-span-full text-center py-12 text-gray-500">
+                <p>No hay servicios destacados disponibles en este momento.</p>
+              </div>
+            )}
           </div>
 
           <div className="text-center">
@@ -225,7 +239,7 @@ const Home = () => {
                 ))}
               </div>
               <p className="text-gray-700 mb-6 leading-relaxed">
-                "Una experiencia increíble. El masaje de piedras calientes fue exactamente 
+                "Una experiencia increíble. El masaje de piedras calientes fue exactamente
                 lo que necesitaba. Salí completamente renovada."
               </p>
               <div className="flex items-center gap-3">
@@ -247,7 +261,7 @@ const Home = () => {
                 ))}
               </div>
               <p className="text-gray-700 mb-6 leading-relaxed">
-                "El personal es muy profesional y el ambiente del spa es simplemente perfecto. 
+                "El personal es muy profesional y el ambiente del spa es simplemente perfecto.
                 Definitivamente volveré."
               </p>
               <div className="flex items-center gap-3">
@@ -269,7 +283,7 @@ const Home = () => {
                 ))}
               </div>
               <p className="text-gray-700 mb-6 leading-relaxed">
-                "Los tratamientos faciales son maravillosos. Mi piel nunca se ha visto mejor. 
+                "Los tratamientos faciales son maravillosos. Mi piel nunca se ha visto mejor.
                 ¡Altamente recomendado!"
               </p>
               <div className="flex items-center gap-3">
@@ -293,12 +307,12 @@ const Home = () => {
             ¿Listo para tu experiencia de bienestar?
           </h2>
           <p className="text-xl text-primary-100 mb-8 max-w-2xl mx-auto">
-            Reserva tu cita hoy y comienza tu viaje hacia el equilibrio perfecto 
+            Reserva tu cita hoy y comienza tu viaje hacia el equilibrio perfecto
             de cuerpo, mente y espíritu.
           </p>
           <Link to="/booking">
-            <Button 
-              variant="secondary" 
+            <Button
+              variant="secondary"
               size="lg"
               className="bg-white text-primary-700 hover:bg-primary-50"
             >

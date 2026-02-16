@@ -116,6 +116,33 @@ const Booking = () => {
     }
   };
 
+  // Verificar si un día está deshabilitado
+  const isDayDisabled = (date) => {
+    if (!settings) return false;
+
+    // Verificar días pasados (aunque minDate y el calendario ya lo manejan visualmente, es bueno tener la lógica)
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (date < today) return true;
+
+    // Verificar horario semanal
+    const dayOfWeek = date.getDay(); // 0 = Domingo
+    const scheduleDay = settings.weeklySchedule.find(d => d.day === dayOfWeek);
+    if (scheduleDay && !scheduleDay.isOpen) return true;
+
+    // Verificar excepciones
+    // Ajustar fecha local para comparación de string YYYY-MM-DD
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const dateString = `${year}-${month}-${day}`;
+
+    const exception = settings.exceptions.find(ex => ex.date === dateString);
+    if (exception && exception.type === 'closed') return true;
+
+    return false;
+  };
+
   // Obtener horarios no disponibles para la fecha seleccionada
   const getUnavailableSlots = () => {
     if (!currentBooking.date) return [];

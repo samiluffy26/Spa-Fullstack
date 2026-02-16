@@ -11,6 +11,7 @@ const useServices = () => {
   const [priceRange, setPriceRange] = useState({ min: 0, max: 1000 });
   const [services, setServices] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   // Cargar servicios al montar el hook
   useEffect(() => {
@@ -34,6 +35,7 @@ const useServices = () => {
       }
     } catch (error) {
       console.error('Error cargando servicios:', error);
+      setError(error.message || 'Error al cargar servicios');
     } finally {
       setIsLoading(false);
     }
@@ -115,7 +117,9 @@ const useServices = () => {
     fetchServices,
     getServiceById,
     getPopularServices,
-    getRecommendedServices
+    getPopularServices,
+    getRecommendedServices,
+    error // Exportar error
   };
 };
 

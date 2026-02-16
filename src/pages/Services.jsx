@@ -26,7 +26,9 @@ const Services = () => {
     priceRange,
     setPriceRange,
     clearFilters,
-    sortServices
+    sortServices,
+    error,
+    isLoading
   } = useServices();
 
   const [sortBy, setSortBy] = useState('name');
@@ -38,7 +40,7 @@ const Services = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="container-custom">
-        
+
         {/* Header */}
         <div className="mb-12">
           <h1 className="text-4xl md:text-5xl font-serif font-bold text-gray-900 mb-4">
@@ -52,7 +54,7 @@ const Services = () => {
         {/* Barra de búsqueda y filtros */}
         <div className="bg-white rounded-2xl p-6 shadow-sm mb-8">
           <div className="flex flex-col lg:flex-row gap-4">
-            
+
             {/* Búsqueda */}
             <div className="flex-1">
               <Input
@@ -105,7 +107,7 @@ const Services = () => {
           {showFilters && (
             <div className="mt-6 pt-6 border-t border-gray-200 animate-slideDown">
               <div className="grid md:grid-cols-2 gap-6">
-                
+
                 {/* Rango de precio */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-3">
@@ -151,6 +153,14 @@ const Services = () => {
             </div>
           )}
         </div>
+
+
+        {/* Error Message */}
+        {error && (
+          <div className="mb-8 bg-red-50 text-red-600 p-4 rounded-xl border border-red-100 flex items-center justify-center">
+            <p>Error: {error}</p>
+          </div>
+        )}
 
         {/* Resultados */}
         <div className="mb-6 flex items-center justify-between">
