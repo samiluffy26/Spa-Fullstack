@@ -14,7 +14,8 @@ import {
   ServicesManager,
   CategoriesManager,
   EditService,
-  SettingsManager
+  SettingsManager,
+  BookingsManager
 } from './pages';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminRoute from './components/auth/AdminRoute';
@@ -61,6 +62,7 @@ function App() {
           <Route path="services" element={<ServicesManager />} />
           <Route path="categories" element={<CategoriesManager />} />
           <Route path="settings" element={<SettingsManager />} />
+          <Route path="bookings" element={<BookingsManager />} />
         </Route>
 
         {/* Ruta 404 - Redirige al home */}

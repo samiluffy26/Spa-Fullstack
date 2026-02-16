@@ -166,6 +166,15 @@ const AdminDashboard = () => {
                         <h3 className="text-xl font-bold text-gray-900 mb-6">Acciones Rápidas</h3>
                         <div className="space-y-3">
                             <button
+                                onClick={() => navigate('/admin/bookings')}
+                                className="w-full text-left p-4 rounded-xl border border-gray-100 hover:bg-gray-50 transition-colors flex items-center gap-3"
+                            >
+                                <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg">
+                                    <Calendar className="w-5 h-5" />
+                                </div>
+                                <span className="text-sm font-bold text-gray-700">Gestionar Reservas</span>
+                            </button>
+                            <button
                                 onClick={() => navigate('/admin/services/new')}
                                 className="w-full text-left p-4 rounded-xl border border-gray-100 hover:bg-gray-50 transition-colors flex items-center gap-3"
                             >

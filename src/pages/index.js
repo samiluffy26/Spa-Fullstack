@@ -12,3 +12,4 @@ export { default as ServicesManager } from './ServicesManager';
 export { default as CategoriesManager } from './CategoriesManager';
 export { default as EditService } from './EditService';
 export { default as SettingsManager } from './SettingsManager';
+export { default as BookingsManager } from './BookingsManager';
