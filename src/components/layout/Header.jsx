@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Phone, Mail, User, LogOut, ChevronDown, ShieldCheck } from 'lucide-react';
+import { Menu, X, Phone, Mail, User, LogOut, ChevronDown, ShieldCheck, Calendar } from 'lucide-react';
 import Navigation from './Navigation';
 import Button from '../ui/Button';
 import { useAuth } from '../../hooks';
@@ -139,8 +139,11 @@ const Header = () => {
                     <div className="px-4 py-2 border-b border-gray-50 mb-1">
                       <p className="text-xs text-gray-500 truncate">{user.email}</p>
                     </div>
+                    <Link to="/profile" className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+                      <User className="w-4 h-4" /> Mi Perfil
+                    </Link>
                     <Link to="/my-reservations" className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
-                      <User className="w-4 h-4" /> Mis Reservas
+                      <Calendar className="w-4 h-4" /> Mis Reservas
                     </Link>
                     {user.role === 'admin' && (
                       <Link to="/admin" className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
@@ -241,8 +244,14 @@ const Header = () => {
                     </div>
                   </div>
 
-                  <Link to="/my-reservations" className="block">
+                  <Link to="/profile" className="block">
                     <Button variant="outline" fullWidth icon={User}>
+                      Mi Perfil
+                    </Button>
+                  </Link>
+
+                  <Link to="/my-reservations" className="block">
+                    <Button variant="outline" fullWidth icon={Calendar}>
                       Mis Reservas
                     </Button>
                   </Link>

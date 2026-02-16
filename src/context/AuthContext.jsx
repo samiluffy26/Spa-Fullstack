@@ -93,18 +93,22 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
-  // Actualizar perfil de usuario (opcional, si implementas el endpoint)
+  // Actualizar perfil de usuario
   const updateProfile = async (updates) => {
     try {
       setIsLoading(true);
-      // Simulación o llamada real si existe el endpoint
-      const updatedUser = { ...user, ...updates };
+
+      const response = await api.patch('/users/profile', updates);
+      const updatedUser = response.data;
+
       localStorage.setItem('spa_user', JSON.stringify(updatedUser));
       setUser(updatedUser);
+
       return { success: true, user: updatedUser };
     } catch (error) {
       console.error('Error actualizando perfil:', error);
-      return { success: false, error: error.message };
+      const message = error.response?.data?.message || 'Error al actualizar perfil';
+      return { success: false, error: message };
     } finally {
       setIsLoading(false);
     }

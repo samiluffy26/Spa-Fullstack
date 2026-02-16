@@ -8,7 +8,8 @@ import {
   MyReservations,
   Contact,
   Login,
-  Register
+  Register,
+  Profile
 } from './pages';
 
 /**
@@ -43,6 +44,7 @@ function App() {
         {/* Autenticación */}
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
+        <Route path="profile" element={<Profile />} />
 
         {/* Ruta 404 - Redirige al home */}
         <Route path="*" element={<Navigate to="/" replace />} />
