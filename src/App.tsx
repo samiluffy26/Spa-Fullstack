@@ -11,6 +11,8 @@ import {
   Register,
   Profile
 } from './pages';
+import AdminDashboard from './pages/AdminDashboard';
+import AdminRoute from './components/auth/AdminRoute';
 
 /**
  * Componente principal de la aplicación
@@ -45,6 +47,11 @@ function App() {
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
         <Route path="profile" element={<Profile />} />
+
+        {/* Rutas de Administrador */}
+        <Route path="admin" element={<AdminRoute />}>
+          <Route index element={<AdminDashboard />} />
+        </Route>
 
         {/* Ruta 404 - Redirige al home */}
         <Route path="*" element={<Navigate to="/" replace />} />
