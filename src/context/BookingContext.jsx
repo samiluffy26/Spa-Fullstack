@@ -63,7 +63,25 @@ export const BookingProvider = ({ children }) => {
     fetchBookings();
   }, [isAuthenticated]);
 
-  // ... (otros métodos)
+  // Establecer servicio seleccionado
+  const setService = (service) => {
+    setCurrentBooking(prev => ({ ...prev, service }));
+  };
+
+  // Establecer fecha seleccionada
+  const setDate = (date) => {
+    setCurrentBooking(prev => ({ ...prev, date }));
+  };
+
+  // Establecer hora seleccionada
+  const setTime = (time) => {
+    setCurrentBooking(prev => ({ ...prev, time }));
+  };
+
+  // Establecer notas
+  const setNotes = (notes) => {
+    setCurrentBooking(prev => ({ ...prev, notes }));
+  };
 
   // Crear nueva reserva en el backend
   const createBooking = async (bookingData) => {
@@ -115,8 +133,6 @@ export const BookingProvider = ({ children }) => {
       setIsLoading(false);
     }
   };
-
-  // ... (cancelBooking)
 
   const rescheduleBooking = async (bookingId, newDate, newTime) => {
     try {
