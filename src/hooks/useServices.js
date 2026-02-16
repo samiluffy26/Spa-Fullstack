@@ -21,7 +21,8 @@ const useServices = () => {
     setIsLoading(true);
     try {
       const response = await api.get('/services');
-      setServices(response.data);
+      const mappedServices = response.data.map(s => ({ ...s, id: s._id }));
+      setServices(mappedServices);
 
       // Actualizar rango de precios basado en los datos reales
       if (response.data.length > 0) {
@@ -61,6 +62,23 @@ const useServices = () => {
     return filtered;
   }, [services, selectedCategory, searchQuery, priceRange]);
 
+  // Restablecer funciones de ayuda para compatibilidad
+  const getServiceById = (id) => {
+    return services.find(service => (service._id || service.id) == id);
+  };
+
+  const getPopularServices = (limit = 3) => {
+    return services.slice(0, limit);
+  };
+
+  const getRecommendedServices = (serviceId, limit = 3) => {
+    const currentService = getServiceById(serviceId);
+    if (!currentService) return [];
+    return services
+      .filter(s => s.category === currentService.category && (s._id || s.id) !== serviceId)
+      .slice(0, limit);
+  };
+
   const sortServices = (servicesArray, sortBy = 'name') => {
     const sorted = [...servicesArray];
     switch (sortBy) {
@@ -94,7 +112,10 @@ const useServices = () => {
     setPriceRange,
     sortServices,
     clearFilters,
-    fetchServices
+    fetchServices,
+    getServiceById,
+    getPopularServices,
+    getRecommendedServices
   };
 };
 

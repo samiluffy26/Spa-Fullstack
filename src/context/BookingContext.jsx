@@ -41,7 +41,18 @@ export const BookingProvider = ({ children }) => {
       try {
         setIsLoading(true);
         const response = await api.get('/bookings/my-bookings');
-        setBookings(response.data);
+
+        // Mapear datos para compatibilidad con el frontend
+        const mappedBookings = response.data.map(b => ({
+          ...b,
+          id: b._id,
+          serviceId: b.serviceId?._id || b.serviceId,
+          serviceName: b.serviceId?.name || 'Servicio',
+          servicePrice: b.serviceId?.price || 0,
+          serviceDuration: b.serviceId?.duration || 0
+        }));
+
+        setBookings(mappedBookings);
       } catch (error) {
         console.error('Error cargando reservas desde API:', error);
       } finally {
@@ -52,25 +63,7 @@ export const BookingProvider = ({ children }) => {
     fetchBookings();
   }, [isAuthenticated]);
 
-  // Establecer servicio seleccionado
-  const setService = (service) => {
-    setCurrentBooking(prev => ({ ...prev, service }));
-  };
-
-  // Establecer fecha seleccionada
-  const setDate = (date) => {
-    setCurrentBooking(prev => ({ ...prev, date }));
-  };
-
-  // Establecer hora seleccionada
-  const setTime = (time) => {
-    setCurrentBooking(prev => ({ ...prev, time }));
-  };
-
-  // Establecer notas
-  const setNotes = (notes) => {
-    setCurrentBooking(prev => ({ ...prev, notes }));
-  };
+  // ... (otros métodos)
 
   // Crear nueva reserva en el backend
   const createBooking = async (bookingData) => {
@@ -84,7 +77,7 @@ export const BookingProvider = ({ children }) => {
 
       // Preparar datos para la API
       const bookingPayload = {
-        serviceId: bookingData.service._id || bookingData.service.id, // Compatibilidad con mock y real
+        serviceId: bookingData.service._id || bookingData.service.id,
         date: bookingData.date,
         time: bookingData.time,
         customerName: bookingData.customerName,
@@ -93,7 +86,18 @@ export const BookingProvider = ({ children }) => {
       };
 
       const response = await api.post('/bookings', bookingPayload);
-      const newBooking = response.data;
+      const rawBooking = response.data;
+
+      // Mapear nueva reserva (aunque el backend post no la devuelva poblada usualmente, 
+      // la mapeamos con los datos que ya tenemos para consistencia local inmediata)
+      const newBooking = {
+        ...rawBooking,
+        id: rawBooking._id,
+        serviceId: bookingData.service._id || bookingData.service.id,
+        serviceName: bookingData.service.name,
+        servicePrice: bookingData.service.price,
+        serviceDuration: bookingData.service.duration
+      };
 
       // Agregar a la lista de reservas
       setBookings(prev => [newBooking, ...prev]);
@@ -107,6 +111,26 @@ export const BookingProvider = ({ children }) => {
       console.error('Error creando reserva:', error);
       const message = error.response?.data?.message || error.message;
       return { success: false, error: message };
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // ... (cancelBooking)
+
+  const rescheduleBooking = async (bookingId, newDate, newTime) => {
+    try {
+      setIsLoading(true);
+      await api.patch(`/bookings/${bookingId}`, { date: newDate, time: newTime });
+
+      setBookings(prev => prev.map(b =>
+        (b._id || b.id) === bookingId ? { ...b, date: newDate, time: newTime } : b
+      ));
+
+      return { success: true };
+    } catch (error) {
+      console.error('Error reprogramando:', error);
+      return { success: false, error: error.message };
     } finally {
       setIsLoading(false);
     }
@@ -137,7 +161,6 @@ export const BookingProvider = ({ children }) => {
     }
   };
 
-  // Otros métodos se mantienen igual o se adaptan a la API real
   const resetCurrentBooking = () => {
     setCurrentBooking({
       service: null,
@@ -145,6 +168,41 @@ export const BookingProvider = ({ children }) => {
       time: null,
       notes: ''
     });
+  };
+
+  // Helpers de disponibilidad y filtrado
+  const isTimeSlotAvailable = (date, time) => {
+    return !bookings.some(
+      booking =>
+        booking.date === date &&
+        booking.time === time &&
+        booking.status !== 'cancelled'
+    );
+  };
+
+  const getUpcomingBookings = () => {
+    const now = new Date();
+    return bookings.filter(booking => {
+      const bookingDate = new Date(booking.date);
+      return bookingDate >= now && booking.status !== 'cancelled';
+    }).sort((a, b) => new Date(a.date) - new Date(b.date));
+  };
+
+  const getActiveBookings = () => {
+    return bookings.filter(b => b.status === 'confirmed' || b.status === 'pending');
+  };
+
+  const getPastBookings = () => {
+    const now = new Date();
+    return bookings.filter(booking => new Date(booking.date) < now);
+  };
+
+  const getBookingsByStatus = (status) => {
+    return bookings.filter(booking => booking.status === status);
+  };
+
+  const getBookingById = (id) => {
+    return bookings.find(b => (b._id || b.id) === id);
   };
 
   // Valor del contexto
@@ -159,8 +217,13 @@ export const BookingProvider = ({ children }) => {
     resetCurrentBooking,
     createBooking,
     cancelBooking,
-    getUpcomingBookings: () => bookings.filter(b => b.status !== 'cancelled'),
-    // ... otros getters
+    rescheduleBooking,
+    isTimeSlotAvailable,
+    getUpcomingBookings,
+    getActiveBookings,
+    getPastBookings,
+    getBookingsByStatus,
+    getBookingById
   };
 
   return (
