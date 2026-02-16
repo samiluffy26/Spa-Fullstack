@@ -22,6 +22,13 @@ const ServiceCard = ({ service, variant = 'default' }) => {
     navigate(`/services/${service.id}`);
   };
 
+  const getImageUrl = (imagePath) => {
+    if (!imagePath) return null;
+    if (imagePath.startsWith('http')) return imagePath;
+    // Prepend backend URL for relative paths
+    return `http://localhost:3000${imagePath}`;
+  };
+
   // Variante compacta (para listas o grids con muchos items)
   if (variant === 'compact') {
     return (
@@ -30,8 +37,8 @@ const ServiceCard = ({ service, variant = 'default' }) => {
           {/* Imagen pequeña */}
           <div className="w-24 h-24 flex-shrink-0 bg-gradient-to-br from-primary-100 to-sage-100 rounded-2xl overflow-hidden">
             {service.image ? (
-              <img 
-                src={service.image} 
+              <img
+                src={getImageUrl(service.image)}
                 alt={service.name}
                 className="w-full h-full object-cover"
               />
@@ -72,8 +79,8 @@ const ServiceCard = ({ service, variant = 'default' }) => {
       {/* Imagen */}
       <div className="relative h-56 bg-gradient-to-br from-primary-100 to-sage-100 overflow-hidden">
         {service.image ? (
-          <img 
-            src={service.image} 
+          <img
+            src={getImageUrl(service.image)}
             alt={service.name}
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
           />
@@ -82,7 +89,7 @@ const ServiceCard = ({ service, variant = 'default' }) => {
             <Sparkles className="w-16 h-16 text-primary-600 opacity-50" />
           </div>
         )}
-        
+
         {/* Badge de categoría */}
         <div className="absolute top-4 right-4">
           <span className="px-3 py-1 bg-white/90 backdrop-blur-sm rounded-full text-sm font-medium text-primary-700 capitalize">
@@ -134,15 +141,15 @@ const ServiceCard = ({ service, variant = 'default' }) => {
 
         {/* Botones de acción */}
         <div className="flex gap-3">
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             onClick={handleViewDetails}
             className="flex-1"
           >
             Ver Detalles
           </Button>
-          <Button 
-            variant="primary" 
+          <Button
+            variant="primary"
             onClick={handleBookNow}
             className="flex-1"
           >
