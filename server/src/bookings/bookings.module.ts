@@ -7,6 +7,7 @@ import { Booking, BookingSchema } from './schemas/booking.schema';
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Booking.name, schema: BookingSchema }]),
+    SettingsModule,
   ],
   controllers: [BookingsController],
   providers: [BookingsService],
