@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import api from '../utils/api';
 
 // Crear el contexto
 const AuthContext = createContext();
@@ -22,12 +23,14 @@ export const AuthProvider = ({ children }) => {
     const loadUser = () => {
       try {
         const savedUser = localStorage.getItem('spa_user');
-        if (savedUser) {
+        const token = localStorage.getItem('token');
+        if (savedUser && token) {
           setUser(JSON.parse(savedUser));
         }
       } catch (error) {
         console.error('Error cargando usuario:', error);
         localStorage.removeItem('spa_user');
+        localStorage.removeItem('token');
       } finally {
         setIsLoading(false);
       }
@@ -36,77 +39,48 @@ export const AuthProvider = ({ children }) => {
     loadUser();
   }, []);
 
-  // Login - Simula autenticación (en producción sería API)
+  // Login
   const login = async (email, password) => {
     try {
       setIsLoading(true);
-      
-      // Simulación de llamada API (2 segundos)
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Validación básica
-      if (!email || !password) {
-        throw new Error('Email y contraseña son requeridos');
-      }
 
-      // En producción: aquí iría la llamada a tu API
-      // const response = await fetch('/api/auth/login', { ... });
-      
-      // Datos de usuario simulados
-      const userData = {
-        id: Date.now(),
-        name: email.split('@')[0], // Usa parte del email como nombre
-        email: email,
-        phone: '',
-        createdAt: new Date().toISOString()
-      };
+      const response = await api.post('/auth/login', { email, password });
+      const { access_token, user: userData } = response.data;
 
       // Guardar en localStorage
+      localStorage.setItem('token', access_token);
       localStorage.setItem('spa_user', JSON.stringify(userData));
       setUser(userData);
-      
+
       return { success: true, user: userData };
-      
+
     } catch (error) {
       console.error('Error en login:', error);
-      return { success: false, error: error.message };
+      const message = error.response?.data?.message || 'Error en el servidor';
+      return { success: false, error: message };
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Register - Simula registro
+  // Register
   const register = async (name, email, phone, password) => {
     try {
       setIsLoading(true);
-      
-      // Simulación de llamada API
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Validaciones básicas
-      if (!name || !email || !phone || !password) {
-        throw new Error('Todos los campos son requeridos');
-      }
 
-      // En producción: llamada a API
-      // const response = await fetch('/api/auth/register', { ... });
-      
-      const userData = {
-        id: Date.now(),
-        name,
-        email,
-        phone,
-        createdAt: new Date().toISOString()
-      };
+      const response = await api.post('/auth/register', { name, email, phone, password });
+      const { access_token, user: userData } = response.data;
 
+      localStorage.setItem('token', access_token);
       localStorage.setItem('spa_user', JSON.stringify(userData));
       setUser(userData);
-      
+
       return { success: true, user: userData };
-      
+
     } catch (error) {
       console.error('Error en registro:', error);
-      return { success: false, error: error.message };
+      const message = error.response?.data?.message || 'Error en el servidor';
+      return { success: false, error: message };
     } finally {
       setIsLoading(false);
     }
@@ -115,24 +89,19 @@ export const AuthProvider = ({ children }) => {
   // Logout
   const logout = () => {
     localStorage.removeItem('spa_user');
+    localStorage.removeItem('token');
     setUser(null);
   };
 
-  // Actualizar perfil de usuario
+  // Actualizar perfil de usuario (opcional, si implementas el endpoint)
   const updateProfile = async (updates) => {
     try {
       setIsLoading(true);
-      
-      // Simulación de API
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      // Simulación o llamada real si existe el endpoint
       const updatedUser = { ...user, ...updates };
-      
       localStorage.setItem('spa_user', JSON.stringify(updatedUser));
       setUser(updatedUser);
-      
       return { success: true, user: updatedUser };
-      
     } catch (error) {
       console.error('Error actualizando perfil:', error);
       return { success: false, error: error.message };

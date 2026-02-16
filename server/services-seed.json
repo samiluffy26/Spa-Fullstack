@@ -1,0 +1,42 @@
+[
+    {
+        "name": "Masaje Relajante",
+        "description": "Masaje de cuerpo completo con aceites esenciales para aliviar tensiones",
+        "duration": 60,
+        "price": 75,
+        "category": "masajes",
+        "image": "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800&q=80"
+    },
+    {
+        "name": "Masaje de Piedras Calientes",
+        "description": "Terapia con piedras volcánicas calientes para profunda relajación",
+        "duration": 90,
+        "price": 95,
+        "category": "masajes",
+        "image": "https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=800&q=80"
+    },
+    {
+        "name": "Facial Hidratante",
+        "description": "Tratamiento facial con productos naturales para piel radiante",
+        "duration": 60,
+        "price": 65,
+        "category": "faciales",
+        "image": "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=800&q=80"
+    },
+    {
+        "name": "Aromaterapia",
+        "description": "Sesión de relajación con aceites esenciales terapéuticos",
+        "duration": 45,
+        "price": 55,
+        "category": "terapias",
+        "image": "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=800&q=80"
+    },
+    {
+        "name": "Exfoliación Corporal",
+        "description": "Renovación de la piel con sales minerales del mar",
+        "duration": 45,
+        "price": 60,
+        "category": "corporales",
+        "image": "https://images.unsplash.com/photo-1552693673-1bf958298935?w=800&q=80"
+    }
+]
