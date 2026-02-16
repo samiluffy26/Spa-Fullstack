@@ -13,6 +13,7 @@ import {
 } from './pages';
 import AdminDashboard from './pages/AdminDashboard';
 import AddService from './pages/AddService';
+import CategoriesManager from './pages/CategoriesManager';
 import AdminRoute from './components/auth/AdminRoute';
 
 /**
@@ -53,6 +54,7 @@ function App() {
         <Route path="admin" element={<AdminRoute />}>
           <Route index element={<AdminDashboard />} />
           <Route path="services/new" element={<AddService />} />
+          <Route path="categories" element={<CategoriesManager />} />
         </Route>
 
         {/* Ruta 404 - Redirige al home */}
