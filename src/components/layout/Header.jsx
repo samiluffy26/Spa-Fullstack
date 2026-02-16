@@ -8,6 +8,7 @@ import { useAuth } from '../../hooks';
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
   const location = useLocation();
 
@@ -21,9 +22,10 @@ const Header = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Cerrar menú móvil cuando cambia la ruta
+  // Cerrar menú móvil y dropdown cuando cambia la ruta
   useEffect(() => {
     setIsMobileMenuOpen(false);
+    setIsDropdownOpen(false);
   }, [location]);
 
   // Bloquear scroll cuando el menú móvil está abierto
@@ -114,8 +116,20 @@ const Header = () => {
                   </Link>
                 </>
               ) : (
-                <div className="relative group">
-                  <button className="flex items-center gap-2 p-2 rounded-xl hover:bg-gray-100 transition-colors border border-gray-100">
+                <div
+                  className="relative"
+                  onMouseEnter={() => {
+                    if (window.timeoutId) clearTimeout(window.timeoutId);
+                    setIsDropdownOpen(true);
+                  }}
+                  onMouseLeave={() => {
+                    window.timeoutId = setTimeout(() => setIsDropdownOpen(false), 300);
+                  }}
+                >
+                  <button
+                    className="flex items-center gap-2 p-2 rounded-xl hover:bg-gray-100 transition-colors border border-gray-100"
+                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  >
                     <div className="w-8 h-8 bg-primary-100 rounded-lg flex items-center justify-center text-primary-600 font-bold">
                       {user.name.charAt(0).toUpperCase()}
                     </div>
@@ -131,11 +145,20 @@ const Header = () => {
                         ) : 'Cliente'}
                       </p>
                     </div>
-                    <ChevronDown className="w-4 h-4 text-gray-400" />
+                    <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
                   </button>
 
                   {/* Dropdown Profile */}
-                  <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-all transform origin-top-right scale-95 group-hover:scale-100 py-2">
+                  <div
+                    className={`
+                      absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 
+                      transition-all transform origin-top-right duration-200
+                      ${isDropdownOpen
+                        ? 'opacity-100 scale-100 translate-y-0 pointer-events-auto'
+                        : 'opacity-0 scale-95 -translate-y-2 pointer-events-none'}
+                      py-2
+                    `}
+                  >
                     <div className="px-4 py-2 border-b border-gray-50 mb-1">
                       <p className="text-xs text-gray-500 truncate">{user.email}</p>
                     </div>
