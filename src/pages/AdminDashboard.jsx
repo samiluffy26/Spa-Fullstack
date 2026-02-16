@@ -13,7 +13,8 @@ import {
     Plus,
     X,
     AlertTriangle,
-    Tag
+    Tag,
+    Settings
 } from 'lucide-react';
 import api from '../utils/api';
 import Card from '../components/ui/Card';
@@ -196,6 +197,15 @@ const AdminDashboard = () => {
                                     <AlertTriangle className="w-5 h-5" />
                                 </div>
                                 <span className="text-sm font-bold text-gray-700">Reportar Incidencia</span>
+                            </button>
+                            <button
+                                onClick={() => navigate('/admin/settings')}
+                                className="w-full text-left p-4 rounded-xl border border-gray-100 hover:bg-gray-50 transition-colors flex items-center gap-3"
+                            >
+                                <div className="p-2 bg-blue-50 text-blue-600 rounded-lg">
+                                    <Settings className="w-5 h-5" />
+                                </div>
+                                <span className="text-sm font-bold text-gray-700">Ajustes y Disponibilidad</span>
                             </button>
                         </div>
                     </Card>
