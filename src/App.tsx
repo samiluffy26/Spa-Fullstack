@@ -12,6 +12,7 @@ import {
   Profile
 } from './pages';
 import AdminDashboard from './pages/AdminDashboard';
+import AddService from './pages/AddService';
 import AdminRoute from './components/auth/AdminRoute';
 
 /**
@@ -51,6 +52,7 @@ function App() {
         {/* Rutas de Administrador */}
         <Route path="admin" element={<AdminRoute />}>
           <Route index element={<AdminDashboard />} />
+          <Route path="services/new" element={<AddService />} />
         </Route>
 
         {/* Ruta 404 - Redirige al home */}
