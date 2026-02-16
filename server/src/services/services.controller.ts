@@ -22,7 +22,8 @@ export class ServicesController {
       },
     }),
     fileFilter: (req, file, cb) => {
-      if (!file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
+      // Allow any image format
+      if (!file.mimetype.startsWith('image/')) {
         return cb(new BadRequestException('Only image files are allowed!'), false);
       }
       cb(null, true);
