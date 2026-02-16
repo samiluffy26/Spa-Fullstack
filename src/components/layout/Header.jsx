@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Phone, Mail } from 'lucide-react';
+import { Menu, X, Phone, Mail, User, LogOut, ChevronDown, ShieldCheck } from 'lucide-react';
 import Navigation from './Navigation';
 import Button from '../ui/Button';
+import { useAuth } from '../../hooks';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { user, isAuthenticated, logout } = useAuth();
   const location = useLocation();
 
   // Detectar scroll para cambiar estilo del header
@@ -43,15 +45,15 @@ const Header = () => {
         <div className="container-custom">
           <div className="flex justify-between items-center text-sm">
             <div className="flex items-center gap-6">
-              <a 
-                href="tel:+18095551234" 
+              <a
+                href="tel:+18095551234"
                 className="flex items-center gap-2 hover:text-sage-200 transition-colors"
               >
                 <Phone className="w-4 h-4" />
                 <span>(809) 555-1234</span>
               </a>
-              <a 
-                href="mailto:info@relaxspa.com" 
+              <a
+                href="mailto:info@relaxspa.com"
                 className="flex items-center gap-2 hover:text-sage-200 transition-colors"
               >
                 <Mail className="w-4 h-4" />
@@ -66,18 +68,18 @@ const Header = () => {
       </div>
 
       {/* Header Principal */}
-      <header 
+      <header
         className={`
           sticky top-0 z-40 transition-all duration-300
-          ${isScrolled 
-            ? 'bg-white/95 backdrop-blur-md shadow-md' 
+          ${isScrolled
+            ? 'bg-white/95 backdrop-blur-md shadow-md'
             : 'bg-white'
           }
         `}
       >
         <div className="container-custom">
           <div className="flex items-center justify-between h-20">
-            
+
             {/* Logo */}
             <Link to="/" className="flex items-center gap-3 group">
               <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-sage-600 rounded-2xl flex items-center justify-center transform group-hover:scale-105 transition-transform">
@@ -96,13 +98,64 @@ const Header = () => {
               <Navigation />
             </div>
 
-            {/* CTA Button Desktop */}
-            <div className="hidden lg:block">
-              <Link to="/booking">
-                <Button variant="primary">
-                  Reservar Cita
-                </Button>
-              </Link>
+            {/* Auth/CTA Desktop */}
+            <div className="hidden lg:flex items-center gap-4">
+              {!isAuthenticated ? (
+                <>
+                  <Link to="/login">
+                    <Button variant="ghost" size="sm">
+                      Iniciar Sesión
+                    </Button>
+                  </Link>
+                  <Link to="/booking">
+                    <Button variant="primary">
+                      Reservar Cita
+                    </Button>
+                  </Link>
+                </>
+              ) : (
+                <div className="relative group">
+                  <button className="flex items-center gap-2 p-2 rounded-xl hover:bg-gray-100 transition-colors border border-gray-100">
+                    <div className="w-8 h-8 bg-primary-100 rounded-lg flex items-center justify-center text-primary-600 font-bold">
+                      {user.name.charAt(0).toUpperCase()}
+                    </div>
+                    <div className="hidden xl:block text-left">
+                      <p className="text-sm font-semibold text-gray-900 leading-tight">
+                        {user.name}
+                      </p>
+                      <p className="text-[10px] text-primary-600 font-bold uppercase tracking-wider">
+                        {user.role === 'admin' ? (
+                          <span className="flex items-center gap-1">
+                            <ShieldCheck className="w-2 h-2" /> Admin
+                          </span>
+                        ) : 'Cliente'}
+                      </p>
+                    </div>
+                    <ChevronDown className="w-4 h-4 text-gray-400" />
+                  </button>
+
+                  {/* Dropdown Profile */}
+                  <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-all transform origin-top-right scale-95 group-hover:scale-100 py-2">
+                    <div className="px-4 py-2 border-b border-gray-50 mb-1">
+                      <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                    </div>
+                    <Link to="/my-reservations" className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+                      <User className="w-4 h-4" /> Mis Reservas
+                    </Link>
+                    {user.role === 'admin' && (
+                      <Link to="/admin" className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+                        <ShieldCheck className="w-4 h-4" /> Dashboard Admin
+                      </Link>
+                    )}
+                    <button
+                      onClick={logout}
+                      className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                    >
+                      <LogOut className="w-4 h-4" /> Cerrar Sesión
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Mobile Menu Button */}
@@ -122,23 +175,23 @@ const Header = () => {
       </header>
 
       {/* Mobile Menu */}
-      <div 
+      <div
         className={`
           fixed inset-0 z-30 lg:hidden transition-all duration-300
-          ${isMobileMenuOpen 
-            ? 'opacity-100 pointer-events-auto' 
+          ${isMobileMenuOpen
+            ? 'opacity-100 pointer-events-auto'
             : 'opacity-0 pointer-events-none'
           }
         `}
       >
         {/* Overlay */}
-        <div 
+        <div
           className="absolute inset-0 bg-black/50 backdrop-blur-sm"
           onClick={() => setIsMobileMenuOpen(false)}
         />
-        
+
         {/* Menu Panel */}
-        <div 
+        <div
           className={`
             absolute top-0 right-0 w-full max-w-sm h-full bg-white shadow-2xl
             transform transition-transform duration-300
@@ -160,25 +213,61 @@ const Header = () => {
             <Navigation mobile />
 
             {/* Mobile CTA */}
-            <div className="mt-8">
-              <Link to="/booking" className="block">
-                <Button variant="primary" fullWidth>
-                  Reservar Cita
-                </Button>
-              </Link>
+            <div className="mt-8 space-y-4">
+              {!isAuthenticated ? (
+                <>
+                  <Link to="/login" className="block">
+                    <Button variant="outline" fullWidth>
+                      Iniciar Sesión
+                    </Button>
+                  </Link>
+                  <Link to="/register" className="block">
+                    <Button variant="primary" fullWidth>
+                      Registrarse
+                    </Button>
+                  </Link>
+                </>
+              ) : (
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-2xl border border-gray-100">
+                    <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center text-primary-600 font-bold text-xl">
+                      {user.name.charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                      <p className="font-bold text-gray-900">{user.name}</p>
+                      <p className="text-xs text-primary-600 font-bold uppercase tracking-wider">
+                        {user.role === 'admin' ? 'Administrador' : 'Cliente'}
+                      </p>
+                    </div>
+                  </div>
+
+                  <Link to="/my-reservations" className="block">
+                    <Button variant="outline" fullWidth icon={User}>
+                      Mis Reservas
+                    </Button>
+                  </Link>
+
+                  <button
+                    onClick={logout}
+                    className="w-full flex items-center justify-center gap-2 p-3 text-red-600 font-semibold hover:bg-red-50 rounded-xl transition-colors"
+                  >
+                    <LogOut className="w-5 h-5" /> Cerrar Sesión
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* Mobile Contact Info */}
             <div className="mt-8 pt-8 border-t border-gray-200 space-y-4">
-              <a 
-                href="tel:+18095551234" 
+              <a
+                href="tel:+18095551234"
                 className="flex items-center gap-3 text-gray-700 hover:text-primary-600 transition-colors"
               >
                 <Phone className="w-5 h-5" />
                 <span>(809) 555-1234</span>
               </a>
-              <a 
-                href="mailto:info@relaxspa.com" 
+              <a
+                href="mailto:info@relaxspa.com"
                 className="flex items-center gap-3 text-gray-700 hover:text-primary-600 transition-colors"
               >
                 <Mail className="w-5 h-5" />

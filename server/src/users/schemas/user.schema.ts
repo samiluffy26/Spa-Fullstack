@@ -12,7 +12,7 @@ export class User extends Document {
     @Prop({ required: true })
     name: string;
 
-    @Prop({ default: 'user' })
+    @Prop({ default: 'client' })
     role: string;
 }
 
