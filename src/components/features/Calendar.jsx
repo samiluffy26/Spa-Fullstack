@@ -147,6 +147,7 @@ const Calendar = ({ selectedDate, onSelectDate, disabledDates = [], minDate = ne
           return (
             <button
               key={index}
+              type="button"
               onClick={() => handleSelectDate(day)}
               disabled={isDisabled}
               className={`

@@ -49,17 +49,22 @@ const Booking = () => {
   // Si vienen de ServiceCard con servicio pre-seleccionado
   useEffect(() => {
     if (location.state?.service) {
-      setService(location.state.service);
-      setStep(2); // Ir directo a selección de fecha
-    }
-  }, [location.state, setService]);
+      setService(location.state.service); // Esto actualiza el contexto
+      setStep(2); // Avanzar al paso 2
 
-  // Limpiar al desmontar
+      // Limpiar el state de location para evitar re-ejecución si se navega
+      // window.history.replaceState({}, document.title); 
+      // Nota: React Router reemplaza esto, mejor solo dependemos de que este effect corra una vez
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Empty dependency array to run ONLY once on mount
+
+  // Limpiar reserva al salir del componente (unmount)
   useEffect(() => {
     return () => {
-      // Solo limpiar si se completa o se cancela
-      // No limpiar en navegación normal para permitir "volver"
+      resetCurrentBooking();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Handlers
@@ -70,12 +75,13 @@ const Booking = () => {
 
   const handleDateSelect = (date) => {
     setDate(date);
-    setStep(3);
+    // Pequeño timeout para dar feedback visual antes de cambiar
+    setTimeout(() => setStep(3), 200);
   };
 
   const handleTimeSelect = (time) => {
     setTime(time);
-    setStep(4);
+    setTimeout(() => setStep(4), 200);
   };
 
   const handleBack = () => {
@@ -285,6 +291,8 @@ const Booking = () => {
                 onSelectDate={handleDateSelect}
                 minDate={new Date()}
                 isDayDisabled={isDayDisabled}
+              />
+              {!settings && <p className="text-sm text-gray-500 mt-2">Cargando disponibilidad...</p>}
               />
             </div>
           )}
