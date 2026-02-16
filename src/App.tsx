@@ -59,6 +59,7 @@ function App() {
           <Route path="services/edit/:id" element={<EditService />} />
           <Route path="services" element={<ServicesManager />} />
           <Route path="categories" element={<CategoriesManager />} />
+          <Route path="settings" element={<SettingsManager />} />
         </Route>
 
         {/* Ruta 404 - Redirige al home */}

@@ -33,34 +33,41 @@ export const BookingProvider = ({ children }) => {
   // Estado de carga
   const [isLoading, setIsLoading] = useState(false);
 
-  // Cargar reservas desde la API cuando el usuario está autenticado
-  useEffect(() => {
-    const fetchBookings = async () => {
-      if (!isAuthenticated) return;
+  // Estado de settings
+  const [settings, setSettings] = useState(null);
 
+  // Cargar reservas y settings
+  useEffect(() => {
+    const fetchInitialData = async () => {
       try {
         setIsLoading(true);
-        const response = await api.get('/bookings/my-bookings');
+        const [bookingsRes, settingsRes] = await Promise.all([
+          isAuthenticated ? api.get('/bookings/my-bookings') : Promise.resolve({ data: [] }),
+          api.get('/settings')
+        ]);
 
-        // Mapear datos para compatibilidad con el frontend
-        const mappedBookings = response.data.map(b => ({
-          ...b,
-          id: b._id,
-          serviceId: b.serviceId?._id || b.serviceId,
-          serviceName: b.serviceId?.name || 'Servicio',
-          servicePrice: b.serviceId?.price || 0,
-          serviceDuration: b.serviceId?.duration || 0
-        }));
+        if (isAuthenticated) {
+          const mappedBookings = bookingsRes.data.map(b => ({
+            ...b,
+            id: b._id,
+            serviceId: b.serviceId?._id || b.serviceId,
+            serviceName: b.serviceId?.name || 'Servicio',
+            servicePrice: b.serviceId?.price || 0,
+            serviceDuration: b.serviceId?.duration || 0
+          }));
+          setBookings(mappedBookings);
+        }
 
-        setBookings(mappedBookings);
+        setSettings(settingsRes.data);
+
       } catch (error) {
-        console.error('Error cargando reservas desde API:', error);
+        console.error('Error loading initial data:', error);
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchBookings();
+    fetchInitialData();
   }, [isAuthenticated]);
 
   // Establecer servicio seleccionado
@@ -225,6 +232,7 @@ export const BookingProvider = ({ children }) => {
   const value = {
     currentBooking,
     bookings,
+    settings,
     isLoading,
     setService,
     setDate,

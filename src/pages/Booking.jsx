@@ -12,6 +12,7 @@ import { useServices } from '../hooks';
 import { useAuth } from '../hooks';
 import { TIME_SLOTS } from '../utils/constants';
 import { formatDate } from '../utils/dateFormatter';
+import { isSameDay, parseISO } from 'date-fns';
 
 /**
  * Página de reserva - Wizard multi-paso
@@ -27,7 +28,7 @@ const Booking = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
-  
+
   const {
     currentBooking,
     setService,
@@ -35,7 +36,8 @@ const Booking = () => {
     setTime,
     createBooking,
     isTimeSlotAvailable,
-    resetCurrentBooking
+    resetCurrentBooking,
+    settings
   } = useBooking();
 
   const { services } = useServices();
@@ -98,7 +100,7 @@ const Booking = () => {
 
       if (result.success) {
         setStep(5); // Ir a confirmación
-        
+
         // Redirigir a "Mis Reservas" después de 3 segundos
         setTimeout(() => {
           navigate('/my-reservations');
@@ -117,7 +119,7 @@ const Booking = () => {
   // Obtener horarios no disponibles para la fecha seleccionada
   const getUnavailableSlots = () => {
     if (!currentBooking.date) return [];
-    
+
     return TIME_SLOTS.filter(
       time => !isTimeSlotAvailable(currentBooking.date, time)
     );
@@ -135,7 +137,7 @@ const Booking = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="container-custom">
-        
+
         {/* Header */}
         <div className="mb-8">
           <button
@@ -205,7 +207,7 @@ const Booking = () => {
 
         {/* Contenido del paso actual */}
         <div className="max-w-5xl mx-auto">
-          
+
           {/* PASO 1: Seleccionar servicio */}
           {step === 1 && (
             <div className="animate-fadeIn">
@@ -219,8 +221,8 @@ const Booking = () => {
                     onClick={() => handleServiceSelect(service)}
                     className="cursor-pointer"
                   >
-                    <ServiceCard 
-                      service={service} 
+                    <ServiceCard
+                      service={service}
                       variant="compact"
                     />
                   </div>
@@ -235,7 +237,7 @@ const Booking = () => {
               <h2 className="text-2xl font-serif font-semibold text-gray-900 mb-6">
                 Selecciona una fecha
               </h2>
-              
+
               {/* Resumen del servicio seleccionado */}
               <Card className="mb-6 p-4 bg-primary-50 border-2 border-primary-200">
                 <div className="flex items-center gap-4">
@@ -255,6 +257,7 @@ const Booking = () => {
                 selectedDate={currentBooking.date}
                 onSelectDate={handleDateSelect}
                 minDate={new Date()}
+                isDayDisabled={isDayDisabled}
               />
             </div>
           )}
@@ -318,7 +321,7 @@ const Booking = () => {
                     <h3 className="font-serif font-semibold text-lg text-gray-900 mb-4">
                       Resumen de reserva
                     </h3>
-                    
+
                     <div className="space-y-4">
                       <div className="pb-4 border-b border-gray-100">
                         <p className="text-sm text-gray-500 mb-1">Servicio</p>
@@ -372,7 +375,7 @@ const Booking = () => {
 
               <Card className="max-w-md mx-auto mb-8 p-6 text-left">
                 <h3 className="font-semibold text-gray-900 mb-4">Detalles de tu reserva:</h3>
-                
+
                 <div className="space-y-3">
                   <div>
                     <p className="text-sm text-gray-500">Servicio</p>

@@ -1,10 +1,10 @@
 import React, { useState, useMemo } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { 
-  format, 
-  startOfMonth, 
-  endOfMonth, 
-  startOfWeek, 
+import {
+  format,
+  startOfMonth,
+  endOfMonth,
+  startOfWeek,
   endOfWeek,
   addDays,
   addMonths,
@@ -23,71 +23,75 @@ import Button from '../ui/Button';
  * 
  * Permite navegar por meses y seleccionar una fecha disponible
  */
-const Calendar = ({ selectedDate, onSelectDate, disabledDates = [], minDate = new Date() }) => {
-    const [currentMonth, setCurrentMonth] = useState(selectedDate || new Date());
+const Calendar = ({ selectedDate, onSelectDate, disabledDates = [], minDate = new Date(), ...props }) => {
+  const [currentMonth, setCurrentMonth] = useState(selectedDate || new Date());
 
-    // Navegar al mes anterior
-    const handlePrevMonth = () => {
-        setCurrentMonth(prev => subMonths(prev, 1));
-    };
+  // Navegar al mes anterior
+  const handlePrevMonth = () => {
+    setCurrentMonth(prev => subMonths(prev, 1));
+  };
 
-    //Navegar al mes siguiente
-    const handleNextMonth = () => {
-        setCurrentMonth(prev => addMonths(prev, 1));
-    };
+  //Navegar al mes siguiente
+  const handleNextMonth = () => {
+    setCurrentMonth(prev => addMonths(prev, 1));
+  };
 
-    // Ir a Hoy
-    const handleToday = () => {
-        const today = new Date();
-        setCurrentMonth(today);
-        onSelectDate(today);
-    };
+  // Ir a Hoy
+  const handleToday = () => {
+    const today = new Date();
+    setCurrentMonth(today);
+    onSelectDate(today);
+  };
 
-    //Verificar si una fecha está deshabilitada
-    const isDateDisabled = (date) => {
-        //Fecha anterior a minDate
-        if (isBefore(startOfDay(date), startOfDay(minDate))){
-            return true;
-        }
+  //Verificar si una fecha está deshabilitada
+  const isDateDisabled = (date) => {
+    //Fecha anterior a minDate
+    if (isBefore(startOfDay(date), startOfDay(minDate))) {
+      return true;
+    }
 
-        //Domingos (dia 0)
-        if (date.getDay() === 0) {
-            return true;
-        }
+    //Fechas especificamente desabilitadas por prop
+    if (disabledDates.some(disabledDate => isSameDay(date, disabledDate))) {
+      return true;
+    }
 
-        //Fechas especificamente desabilitadas
-        return disabledDates.some(disabledDate => isSameDay(date, disabledDate));
-    };
+    // Validacion externa personalizada (para settings)
+    if (props.isDayDisabled && props.isDayDisabled(date)) {
+      return true;
+    }
 
-    //Manejar seleccion de fecha 
-    const handleSelectDate = (date) => {
-        if(!isDateDisabled(date)){
-            onSelectDate(date);
-        }
-    };
+    return false;
+  };
 
-    //Generar dias del mes para mostrar en calendario
-    const days = useMemo(() => {
-        const monthStart = startOfMonth(currentMonth);
-        const monthEnd = endOfMonth(currentMonth);
-        const startDate = startOfWeek(monthStart, { locale: es });
-        const endDate = endOfWeek(monthEnd, { locale: es });
+  //Manejar seleccion de fecha 
+  const handleSelectDate = (date) => {
+    if (!isDateDisabled(date)) {
+      onSelectDate(date);
+    }
+  };
 
-        const daysArray = []; // ✅ Corregido de "d6ays"
-        let day = startDate;
+  //Generar dias del mes para mostrar en calendario
+  const days = useMemo(() => {
+    const monthStart = startOfMonth(currentMonth);
+    const monthEnd = endOfMonth(currentMonth);
+    const startDate = startOfWeek(monthStart, { locale: es });
+    const endDate = endOfWeek(monthEnd, { locale: es });
 
-        while (day <= endDate) {
-            daysArray.push(day);
-            day = addDays(day, 1);
-        }
+    const daysArray = []; // ✅ Corregido de "d6ays"
+    let day = startDate;
 
-        return daysArray;
-    }, [currentMonth]);
+    while (day <= endDate) {
+      daysArray.push(day);
+      day = addDays(day, 1);
+    }
 
-    //Nombres de dias de la semana
-    const weekDays = ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'];
+    return daysArray;
+  }, [currentMonth]);
 
-   return (
+  //Nombres de dias de la semana
+  const weekDays = ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'];
+
+  return (
     <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
       {/* Header - Navegación de mes */}
       <div className="flex items-center justify-between mb-6">
@@ -148,8 +152,8 @@ const Calendar = ({ selectedDate, onSelectDate, disabledDates = [], minDate = ne
               className={`
                 aspect-square rounded-lg flex items-center justify-center
                 text-sm font-medium transition-all duration-200
-                ${!isCurrentMonth 
-                  ? 'text-gray-300 cursor-default' 
+                ${!isCurrentMonth
+                  ? 'text-gray-300 cursor-default'
                   : isDisabled
                     ? 'text-gray-300 cursor-not-allowed bg-gray-50'
                     : isSelected
