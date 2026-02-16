@@ -38,12 +38,16 @@ export class BookingsService {
     }
 
     // 4. Check max daily bookings
+    // Using string comparison since schema defines date as string
+    const startOfDay = dateString + 'T00:00:00.000Z';
+    const endOfDay = dateString + 'T23:59:59.999Z';
+
     const dailyBookingsCount = await this.bookingModel.countDocuments({
       date: {
-        $gte: new Date(dateString + 'T00:00:00.000Z'),
-        $lt: new Date(dateString + 'T23:59:59.999Z')
+        $gte: startOfDay,
+        $lt: endOfDay
       }
-    });
+    } as any);
 
     if (dailyBookingsCount >= settings.maxDailyBookings) {
       throw new BadRequestException('Lo sentimos, hemos alcanzado el límite de reservas para este día.');
